@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 from olms_app.config import APP_NAME
 from olms_app.db.init_db import init_db
 from olms_app.db.database import get_session
@@ -42,9 +41,8 @@ if menu == "Dashboard":
     c4.metric("Open Variance Lines", int((variance_dataframe(session)["Variance Status"] != "MATCH").sum()) if not df.empty else 0)
     if not df.empty:
         chart_df = df.groupby("Item Category", dropna=False)["Physical Stock"].sum().reset_index()
-        st.plotly_chart(px.bar(chart_df, x="Item Category", y="Physical Stock", title="Stock by Category"), use_container_width=True)
-        st.dataframe(df, use_container_width=True)
-
+    st.subheader("Stock by Category")
+    st.bar_chart(chart_df.set_index("Item Category"))    st.dataframe(df, use_container_width=True)
 elif menu == "Stock On Hand":
     st.header("Stock On Hand")
     df = stock_dataframe(session)
