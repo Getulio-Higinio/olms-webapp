@@ -40,9 +40,10 @@ if menu == "Dashboard":
     c3.metric("Open Expiry Alerts", int((df["Expiry Status"].isin(["CRITICAL", "EXPIRED"])).sum()) if not df.empty else 0)
     c4.metric("Open Variance Lines", int((variance_dataframe(session)["Variance Status"] != "MATCH").sum()) if not df.empty else 0)
     if not df.empty:
-        chart_df = df.groupby("Item Category", dropna=False)["Physical Stock"].sum().reset_index()
+    chart_df = df.groupby("Item Category", dropna=False)["Physical Stock"].sum().reset_index()
     st.subheader("Stock by Category")
-    st.bar_chart(chart_df.set_index("Item Category"))    st.dataframe(df, use_container_width=True)
+    st.bar_chart(chart_df.set_index("Item Category"))
+    st.dataframe(df, use_container_width=True)
 elif menu == "Stock On Hand":
     st.header("Stock On Hand")
     df = stock_dataframe(session)
