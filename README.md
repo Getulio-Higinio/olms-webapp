@@ -27,3 +27,4 @@ The app uses SQLite for the MVP. The database is created automatically on first 
 
 ## Production recommendation
 For enterprise deployment, migrate SQLite to PostgreSQL and replace Streamlit authentication placeholders with SSO or role-based login.
+Deployment refresh
