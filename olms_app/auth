@@ -1,2 +1,64 @@
 login.py
 permissions.py
+import bcrypt
+import streamlit as st
+from olms_app.db.models import User
+
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def verify_password(password: str, password_hash: str) -> bool:
+    return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
+
+
+def authenticate_user(session, username: str, password: str):
+    user = session.query(User).filter(User.username == username).first()
+
+    if not user:
+        return None
+
+    if user.is_active != 1:
+        return None
+
+    if not verify_password(password, user.password_hash):
+        return None
+
+    return user
+
+
+def require_login(session):
+    if "user" not in st.session_state:
+        st.session_state.user = None
+
+    if st.session_state.user:
+        return st.session_state.user
+
+    st.title("OLMS Login")
+
+    with st.form("login_form"):
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        submitted = st.form_submit_button("Login")
+
+        if submitted:
+            user = authenticate_user(session, username, password)
+            if user:
+                st.session_state.user = {
+                    "id": user.id,
+                    "username": user.username,
+                    "full_name": user.full_name,
+                    "role": user.role,
+                }
+                st.rerun()
+            else:
+                st.error("Invalid username or password.")
+
+    st.stop()
+
+
+def logout_button():
+    if st.sidebar.button("Logout"):
+        st.session_state.user = None
+        st.rerun()
