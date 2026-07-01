@@ -56,7 +56,50 @@ def require_login(session):
                 st.error("Invalid username or password.")
 
     st.stop()
+ROLE_PERMISSIONS = {
+    "ADMIN": [
+        "Dashboard",
+        "Stock On Hand",
+        "PO Import Preview",
+        "PO Import",
+        "Invoice Import",
+        "Offshore Selection",
+        "PO Variance Report",
+        "Loadout Summary",
+        "Administration",
+    ],
+    "WAREHOUSE_MANAGER": [
+        "Dashboard",
+        "Stock On Hand",
+        "PO Import Preview",
+        "PO Import",
+        "Invoice Import",
+        "Offshore Selection",
+        "PO Variance Report",
+        "Loadout Summary",
+    ],
+    "WAREHOUSE_CONTROLLER": [
+        "Dashboard",
+        "Stock On Hand",
+        "Offshore Selection",
+        "PO Variance Report",
+        "Loadout Summary",
+    ],
+    "VIEWER": [
+        "Dashboard",
+        "Stock On Hand",
+        "PO Variance Report",
+        "Loadout Summary",
+    ],
+}
 
+
+def allowed_menus(role: str):
+    return ROLE_PERMISSIONS.get(role, ROLE_PERMISSIONS["VIEWER"])
+
+
+def can_access(role: str, menu: str) -> bool:
+    return menu in allowed_menus(role)
 
 def logout_button():
     if st.sidebar.button("Logout"):
