@@ -54,7 +54,7 @@ class StockOnHand(Base):
     general_comments = Column(Text)
 
     created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 class POImportPreview(Base):
     __tablename__ = "po_import_preview"
