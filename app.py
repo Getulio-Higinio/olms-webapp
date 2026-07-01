@@ -1,3 +1,5 @@
+from olms_app.auth.login import require_login, logout_button
+from olms_app.auth.permissions import allowed_menus
 import streamlit as st
 import pandas as pd
 from olms_app.config import APP_NAME
@@ -13,22 +15,23 @@ from olms_app.services.reports import stock_dataframe, variance_dataframe
 init_db()
 session = get_session()
 
+# Login obrigatório
+current_user = require_login(session)
+
 st.set_page_config(page_title="OLMS Web App", layout="wide")
 st.title(APP_NAME)
 
+st.set_page_config(page_title="OLMS Web App", layout="wide")
+st.title(APP_NAME)
+
+logout_button()
+
+st.sidebar.write(f"User: {current_user['full_name'] or current_user['username']}")
+st.sidebar.write(f"Role: {current_user['role']}")
+
 menu = st.sidebar.radio(
     "Navigation",
-    [
-        "Dashboard",
-        "Stock On Hand",
-        "PO Import Preview",
-        "PO Import",
-        "Invoice Import",
-        "Offshore Selection",
-        "PO Variance Report",
-        "Loadout Summary",
-        "Administration",
-    ],
+    allowed_menus(current_user["role"]),
 )
 
 if menu == "Dashboard":
