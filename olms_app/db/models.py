@@ -113,3 +113,13 @@ class AuditLog(Base):
     entity_id = Column(String)
     details = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
+    class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    full_name = Column(String)
+    password_hash = Column(String, nullable=False)
+    role = Column(String, default="VIEWER")
+    is_active = Column(Integer, default=1)
+    created_at = Column(DateTime, default=datetime.utcnow)
